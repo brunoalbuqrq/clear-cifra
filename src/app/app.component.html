@@ -1,10 +1,227 @@
 
+<h1 id="updivId0" #updivId0 style="font-size: 36px; color: #fdfdfd; background-color: #575757; padding-left: 40px;">CleanChords</h1>
+<div class="row">
 
-<br><br><br>
-<label>URL:</label>
-<input #url type="text"/>
-<button (click)="getPage(url.value)" >EXIBIR</button>
-<br>
+    <!-- height: auto; -->
+
+    <div class="column" style="float: left; width: 48%; padding: 9px;">
+        <label for="url">URL - links (separated ';'):</label><button style="align-items: flex-end;" (click)="getPage(url.value)" >URL HELPER</button> <br>
+        <textarea #url id="url" type="text" (keyup.enter)="getPage(url.value)" style="width: 100%;"></textarea><br>
+        <button style="align-items: flex-end;" (click)="getPage(url.value)" >GET URL FROM WEB</button>
+        <button style="align-items: flex-end;" (click)="file.click()" >IMPORT PROJECT</button><span *ngIf="countDownPages > 0">{{loadingGet}}</span>    
+        <input type="file" id="file" #file placeholder="Nenhum arquivo selecionado."
+                   style="display:none" (change)="handleFileInput($event.target.files)">
+        
+          <!-- type="video/mp4" -->
+        
+        <!-- background-color: aquamarine;  -->
+    </div>
+    <div class="column" style="float: left; width: 10%; padding: 9px;">
+        <div>
+            <label for="lines">screen lines</label><br>
+            <input id="lines" #lines type="number" [value]="linhasTela" placeholder="Screen Lines" title="Screen Lines" (change)="processLayout()"/>
+    
+        </div>
+        <div>
+            <label for="columns">max columns</label><br>
+            <input id="columns" #columns type="number" [value]="colunas" placeholder="Columns" title="Columns" (change)="processLayout()"/>
+            
+        </div>
+    </div>
+    <div class="column" style="float: left; width: 10%; padding: 9px;">
+        <div>
+            <label for="fontF">font family</label><br>
+            <!-- <input id="fontF" #fontF type="text" [value]="fontFamily" placeholder="Font Family" title="Font Family" (keyup.enter)="fontFamily = fontF.value;"/> -->
+            <select id="fontF" #fontF  [value]="fontFamily"style="width:150px;" placeholder="Font Family" title="Font Family" (change)="processLayout()">
+                <option *ngFor="let fontFam of fonts" [value]="fontFam">{{fontFam}}</option>
+            </select>
+    
+        </div>
+                <div>
+                    <label for="fontS">font size (px)</label><br>
+                    <input id="fontS" #fontS type="number" [value]="fontSize" placeholder="Font Size (px)" title="Font Size (px)" style="width:75px;"  (change)="processLayout()"/>
+                    <!-- <button style=" align-items: flex-end;" (click)="changeFontSize(fontS.value)" style="width:75px;" >-></button> -->
+            
+                </div>
+    </div>
+    <div class="column" style="float: left; width: 10%; padding: 9px;">
+        
+        <div>
+            <label for="tablature">tablature: </label>
+            <input id="tablature" #tablature type="checkbox" value="false" checked="false"  (change)="processLayout()" placeholder="Tablature" title="Tablature"/>
+    
+        </div>
+       <div>
+            <label for="cifra" style="padding-right: 17px;">chords: </label>
+            <input  id="cifra" #cifra type="checkbox" checked="true"   (change)="processLayout()" placeholder="Cifra" title="Cifra"/>
+    
+        </div>
+
+        <div>
+            <label style="font-size: 10px; padding-left: 6px;" for="colorCifra">chords</label>
+            <label style="padding-left: 22px; font-size: 10px;" for="colorLyrics">lyrics</label>
+            <label style="padding-left: 27px;font-size: 10px;" for="colorLyrics">back</label><br>
+            <input type="color" id="colorCifra" (change)="processLayout()" [value]="cifraColor" style="width:46px; margin-right: 4px;" placeholder="color" title="change cifra color...">
+            <input type="color" id="colorLyrics" (change)="processLayout()"  [value]="lyricsColor" style="width:46px; margin-right: 2px;  margin-left: 2px;" placeholder="color" title="change lyrics color...">
+            <input type="color" id="colorBack" (change)="processLayout()"  [value]="backColor" style="width:46px; margin-left: 4px;" placeholder="color" title="change background color...">
+    
+        </div>
+        <!-- <div>
+            <label for="cifra">Song (tone): </label><br><input style="width: 63px;" id="divSelect" type="number" [value]="divIdSelect" #divSelect placeholder="# song" title="# song"  (keyup.enter)="divIdSelect = divSelect.value;"/>
+            
+            <button style=" align-items: flex-end;" (click)="changeRowTone('divId' + divSelect.value, -1)" >b <</button>   
+            <button style=" align-items: flex-end;" (click)="changeRowTone('divId' + divSelect.value, 1)" >> #</button> 
+    
+        </div> -->
+        <!-- <div>
+            <label for="colorLyrics">Lyrics</label><br>
+            <input type="color" id="colorLyrics" (change)="clickColorLyrics()" value="#000000" style="width:75px;">
+    
+        </div> -->
+    
+        
+    
+    </div>
+
+    <div class="column" style="float: left; width: 10%; padding: 9px;">
+        <!-- background-color: lightseagreen; -->
+        <button style="" (click)="processLayout()" title="Applies changes..."> 
+            <!-- <i class="fa fa-file-download" aria-hidden="true"></i> -->
+            APPLY LAYOUT
+         </button><span>{{applying}}</span>
+         <br><br>
+         <button style="" (click)="getProjectFile()" title="Save project content"> 
+            <!-- <i class="fa fa-file-download" aria-hidden="true"></i> -->
+            DOWNLOAD JSON PROJECT
+         </button><br>
+         <!-- *ngIf="content.innerHTML"  -->
+         <button style="" (click)="getFile()" title="Save content as HTML file"> 
+            <!-- <i class="fa fa-file-download" aria-hidden="true"></i> -->
+            DOWNLOAD HTML
+         </button>
+    </div>
+
+   
+
+</div>
+
+
+
+<!-- <input #tablatura type="checkbox" [{ngModel}]="tablatura" checked /> Remover tablatura -->
+
+
+<div>
+    
+    
+</div>
+
+<!-- <input type="text" [(ngModel)]="columnCount" placeholder="Column Count"/> -->
+
+
+<!-- <a *ngIf="content.value" id="download" download (click)="download()">DOWNLOAD</a> -->
+<hr>
 <!-- <label id="resultado"></label> -->
-<a *ngIf="showLink" id="link" download>DOWNLOAD</a>
-<div *ngIf="!showLink" id="content" (change)="getLink()"></div>
+<!-- <a *ngIf="showLink" id="link" download>DOWNLOAD</a> -->
+
+<!-- <video width="400" controls>
+    <source src="assets/videos/..." type="video/mp4">
+    Your browser does not support HTML video.
+</video> -->
+<!-- [style]="'font-size: ' + fontSize + 'px;'" -->
+<div id="content" #content (keyup.f7)="goDown()" (keyup.f8)="goUp()" >
+    
+    <span *ngIf="outPages.length > 0">
+        <script>
+            function goDown(id) {
+                id = id.slice(9);
+                id = +id.slice(0, id.length - 1);
+                var btn = document.getElementById('downdivId' + (id + 2));
+                if (btn) {
+                    btn.focus();
+                }
+                btn = document.getElementById('downdivId' + (id + 1));
+                if (btn) {
+                    btn.focus();
+                }
+            }
+            function goUp(id) {
+                id = id.slice(7);
+                id = +id.slice(0, id.length - 1);
+                var btn = document.getElementById('updivId' + (id - 1));
+                if (btn) {
+                    btn.focus();
+                }
+            }
+        </script>
+        <span *ngFor="let outPage of outPages; let id = index">
+            <div [id]="'divId' + (id + 1)" >{{(id + 1) + ') '}}
+                <span [id]="'spanMovedivId' + (id + 1)">
+                    <!-- movement ok! -->
+                    <button title="previous song..." onclick='goUp(id + 1)' (click)="goUp(id + 1)" [id]="'updivId' + (id + 1)"><</button> 
+                    <button title="next song..." onclick='goDown(id + 1)' (click)="goDown(id + 1)" [id]="'downdivId' + (id + 1)">></button> 
+                </span>
+                <span *ngIf="editMode">
+                    <span [id]="'spanTonedivId' + (id + 1)">
+                        <button *ngIf="!showTones[id]" style="margin-left: 5px;" title="change tone..." (click)="showTone(id)" [id]="'btnShowTonedivId' + (id + 1)" [title]="'diff: ' + tones[id]">tone</button> 
+                        <button *ngIf="showTones[id]" style="margin-left: 5px; color: #dd3322;" title="hide tone..." (click)="showTone(id)" [id]="'btnHideTonedivId' + (id + 1)" >x</button> 
+    
+                        <!-- tone: validate single run... -->
+                        <button *ngIf="showTones[id]" title="decrease song tone..." (click)="changeRowTone('divId' + (id + 1), -1)" [id]="'btnDecTonedivId' + (id + 1)">b <</button> 
+                        <button *ngIf="showTones[id]" title="increase song tone..." (click)="changeRowTone('divId' + (id + 1), 1)" [id]="'btnIncTonedivId' + (id + 1)">> #</button> 
+                    </span>
+                    <span [id]="'spanFontdivId' + (id + 1)">
+                        <!-- font size: engine ok, last run:: -->
+                        <button *ngIf="!showFonts[id]" style="margin-left: 5px;" title="change font size..." (click)="showFont(id)" [id]="'btnShowFontdivId' + (id + 1)">font</button> 
+                        <button *ngIf="showFonts[id]" style="margin-left: 5px; color: #dd3322;" title="hide font..." (click)="showFont(id)" [id]="'btnHideFontdivId' + (id + 1)">x</button> 
+                        <input *ngIf="showFonts[id]" [id]="'fontSize' + (id + 1)" type="number" [value]="fontsSize[id]" placeholder="Font-Size" title="Font-Size" style="width:50px;"  (change)="processLayout(id)"/>
+    
+                        <!-- <button *ngIf="showFonts[id]" style="margin-left: 5px;"title="decrease font size..." (click)="decFont(id)" [id]="'btnDecFontdivId' + (id + 1)">-</button>
+                        <span *ngIf="showFonts[id]" style="font-size: 11px;"> {{fontsSize[id] + 'px'}} </span>
+                        <button *ngIf="showFonts[id]" title="increase font size..." (click)="incFont(id)" [id]="'btnIncFontdivId' + (id + 1)">+</button>  -->
+    
+                       
+                    </span>
+                   <span style="font-size: 11px;">
+                    <button *ngIf="!showConfigs[id]" style="margin-left: 5px;" title="change config..." (click)="showConfig(id)" [id]="'btnShowConfigdivId' + (id + 1)">config</button> 
+                    <span *ngIf="showConfigs[id]">
+                        <button style="margin-left: 5px; color: #dd3322;" title="hide config..." (click)="showConfig(id)  " [id]="'btnHideConfigdivId' + (id + 1)">x</button> 
+                        <!-- [checked]="tabs[id]"   -->
+                        <input [id]="'showTab' + (id + 1)" type="checkbox" (change)="setTab(id)" placeholder="Tablature" title="Tablature"/>tab
+                        <!-- [checked]="chords[id]"  -->
+                        <input [id]="'showChord' + (id + 1)" type="checkbox" (change)="setChord(id)" placeholder="Chords" title="Chords"/>chord
+                        <input [id]="'lines' + (id + 1)" type="number" [value]="lines[id]" placeholder="Lines" title="Lines" style="width:40px;"  (change)="processLayout(id)"/>
+                        <input [id]="'columns' + (id + 1)" type="number" [value]="columns[id]" placeholder="Columns" title="Columns" style="width:40px;"  (change)="processLayout(id)"/>
+                    </span>
+    
+                   </span>
+                   <span>
+                      
+                    <button *ngIf="!edits[id]" style="margin-left: 5px;" title="edit..." (click)="showEdit(id)  " [id]="'btnEditdivId' + (id + 1)">edit</button> 
+                    <span *ngIf="edits[id]">
+                        <br><span style="font-size: 11px; padding-right: 280px;">original:</span> 
+                        <button style="margin-left: 5px; color: #dd3322;" title="cancel editions" (click)="showEdit(id)  " [id]="'btnEditdivId' + (id + 1)">x</button> 
+                        <button style="margin-left: 5px; color: #338822;" title="save editions" (click)="saveEdit(id)  " [id]="'btnEditdivId' + (id + 1)">[#]
+                            <!-- {{(valueId('txtEditdivId' + (id + 1)) !== pages[id]) ? '*' : '' }} -->
+                        </button> <br>
+                        <textarea [id]="'txtEditdivId' + (id + 1)"  style="font-size: 11px; font-family: 'Courier New', Courier, monospace; width: 400px; height: 400px;" [value]="pages[id]"></textarea>
+    
+                    </span>
+                   
+    
+                   </span>
+                </span>
+                
+                
+                <span [id]="'spandivId' + (id + 1)" [innerHTML]="outPage"></span>
+                
+            </div><br><hr><br>
+        </span>
+        <div [id]="'divId' + (pages.length + 1)" > 
+            <span [id]="'spanMovedivId' + (pages.length + 1)">
+                <!-- movement ok! -->
+                <!-- <button title="previous song..." (click)="goUp(pages.length + 1)" [id]="'updivId' + (pages.length + 1)"><</button>  -->
+                <button title="next song..." (click)="goUp(pages.length + 1)" [id]="'downdivId' + (pages.length + 1)">end</button> 
+            </span>
+        </div>
+    </span>    
+</div>
